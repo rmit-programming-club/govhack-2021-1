@@ -13,6 +13,36 @@ var svg = d3.select("body")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
+// This is mainly for the yet-to-be-implemented intervention application
+// Right now, from here --------------------------------------------
+type Intervention = { name: string, mean: number, sd: number };
+
+let data = [{ 
+    name: 'AI',
+    mean: 10,
+    sd: 10
+  },
+  { name: 'Global Poverty',
+    mean: 8,
+    sd: 2
+  },
+  { name: 'Biosecurity',
+    mean: 15,
+    sd: 2
+  }
+]
+function norm_pdf(x: number, mu: number, sigma: number){
+  return Math.exp(-(((x - mu) / sigma)**2))/Math.sqrt(2 * Math.PI);
+}
+function norm_to_points(intervention : Intervention, from: number, to: number, step: number){
+  let new_points : {x: number, y: number}[] = [];
+  for(let i = from; i < to; i+= step){
+    new_points.push({x : i, y: norm_pdf(i, intervention.mean, intervention.sd)});
+  }
+  return new_points;
+}
+
+// To here, is not used ------------------------------------------------
 type DataPoint = {"Country" : string; "Value": number};
 // Parse the Data
 d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum_header.csv").then((raw) => {
